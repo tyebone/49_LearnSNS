@@ -37,10 +37,32 @@ if (!empty($_POST)){
        //||演算子を使って４文字未満または１６文字より多い場合エラー
         $errors['password'] ='length';    
     }
+
+
+
+
+
     //$FILES[キー]['name']; ファイル名
     //$FILES[キー]['tmp_name']; ファイルデータそのもの
     $file_name = $_FILES['input_img_name']['name'];
     if (!empty($file_name)) {
+
+        //拡張子チェックの流れ
+        //1. 画像ファイルの拡張子を所得
+        //2. 大文字は小文字に変換
+        //3. jpg png gifと比較する
+        //4. いずれかにも当てはまらない場合エラー
+
+        // substr（文字列,何文字目から所得か指定）
+$file_type = substr($file_name, -3);
+
+
+        //strtolower(小文字にしたい文字列)
+$file_type = strtolower($file_type);
+
+if($file_type != 'jpg' && $file_type !='png' && $file_type != 'gif'){
+    $errors['img_name'] = 'type';
+    }
 
     } else {
         $errors['img_name'] ='blank';
@@ -135,8 +157,11 @@ if (!empty($_POST)){
 
 <?php if(isset($errors['img_name']) && $errors['img_name'] == 'blank'):?>
     <p class="text-danger">画像を選択してください</p>
-<?php endif; ?>    
+<?php endif; ?>
 
+<?php if (isset($errors['img_name']) && $errors['img_name'] == 'type'):?>
+        <p class="text-danger">拡張子がjpg,png,gifの画像を選択してください</p>
+<?php endif; ?>
 
 
 
