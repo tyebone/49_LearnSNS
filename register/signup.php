@@ -4,8 +4,6 @@
 #3.一致する場合は$errorsにnameをキーにblankという値を保持
 #4.エラーがある場合エラーメッセージを表示
 
-
-
 #1. errorsの定義
 $errors = [];
 #POSTかどうか
@@ -16,22 +14,44 @@ if (!empty($_POST)){
     $name = $_POST['input_name'];
     $email = $_POST['input_email'];
     $password = $_POST['input_password'];
+    //input属性がinput_passwordであるから'input_password'
+    
     if ($name == ''){
     //''でからかどうか
     //ユーザー名が空である、という情報を保持
-    $errors['name'] = 'blank';
+        $errors['name'] = 'blank';
     }
-    if ($emial == '') {
+    if ($email == '') {
         $errors['email'] = 'blank';
     }
+    $count = strlen($password);
+ 
     if ($password == ''){
         $errors['password'] = 'blank';
+    //パスワードの文字数を数える
+    //hogehogeと入力した場合$countには８が入る
+    
+
+
+    }elseif ($count < 4 || 16 < $count) {   
+       //||演算子を使って４文字未満または１６文字より多い場合エラー
+        $errors['password'] ='length';    
+    }
+    //$FILES[キー]['name']; ファイル名
+    //$FILES[キー]['tmp_name']; ファイルデータそのもの
+    $file_name = $_FILES['input_img_name']['name'];
+    if (!empty($file_name)) {
+
+    } else {
+        $errors['img_name'] ='blank';
     }
 }
+
 
 ?>
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="utf-8">
     <title>Learn SNS</title>
@@ -41,6 +61,7 @@ if (!empty($_POST)){
 
     <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
 </head>
+
 <body style="margin-top: 60px">
     <div class="container">
         <div class="row">
@@ -49,12 +70,16 @@ if (!empty($_POST)){
                 <!--
                     まずformタグのmethodとaction
                     singnup.phpでバリエーションをするのでsign.phpに置き換える
+
+                    ファイルをアップロードする際の必須ルール
+                    1. POST送信であること
+                    2.enctyoe属性にmltipart/form-dataが設定されていること
+                    
+
                 -->
     <form method="POST" action="signup.php" enctype="multipart/form-data">
 
-    <div class="form-group">
-
-
+                    <div class="form-group">
 
             <label for="name">ユーザー名</label>
                     <!--
@@ -65,8 +90,8 @@ if (!empty($_POST)){
                         <!--
                             isset(連想配列[キー])連想配列のそのキーが設定されているかどうか
                         -->
-    <?php if (isset($errors['name']) && $errors ['name'] == 'blank'):?>
 
+    <?php if (isset($errors['name']) && $errors ['name'] == 'blank'):?>
     <p class="text-danger">ユーザー名を入力してください</p>
     <?php endif; ?>
 
@@ -84,12 +109,38 @@ if (!empty($_POST)){
 
     </div>
         <div class="form-group">
-                        <label for="password">パスワード</label>
+
+
+
+
+            <label for="password">パスワード</label>
+
     <input type="password" name="input_password" class="form-control" id="password" placeholder="4 ~ 16文字のパスワード">
+        <?php if (isset($errors['password']) && $errors['password'] == 'blank'):?>
+            <p class="text-danger">パスワードを入力してください</p>
+        <?php endif; ?>
+        <?php if (isset($errors['password']) && $errors['password'] == 'length'): ?>
+            <p class="text-danger">パスワードは4~16文字で入力して下さい</p>
+        <?php endif; ?>    
         </div>
     <div class="form-group">
-        <label for="img_name">プロフィール画像</label>
+
+            <label for="img_name">プロフィール画像</label>
+
                         <input type="file" name="input_img_name" id="img_name" accept="image/*">
+
+
+
+
+
+<?php if(isset($errors['img_name']) && $errors['img_name'] == 'blank'):?>
+    <p class="text-danger">画像を選択してください</p>
+<?php endif; ?>    
+
+
+
+
+
                     </div>
                     <input type="submit" class="btn btn-default" value="確認">
                     <span style="float: right; padding-top: 6px;">ログインは
