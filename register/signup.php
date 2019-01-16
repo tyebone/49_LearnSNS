@@ -1,4 +1,9 @@
 <?php
+session_start();
+//セッションを利用するための必須ルール
+//PHPファイルの先頭に書くこと
+
+
 #1.エラーだった場合に何のエラーかを保持する$errorsを定義
 #2.送信されたデータと空文字を比較
 #3.一致する場合は$errorsにnameをキーにblankという値を保持
@@ -20,8 +25,7 @@ if (!empty($_POST)){
     //''でからかどうか
     //ユーザー名が空である、という情報を保持
         $errors['name'] = 'blank';
-    }
-    if ($email == '') {
+    }if ($email == '') {
         $errors['email'] = 'blank';
     }
     $count = strlen($password);
@@ -67,6 +71,38 @@ if($file_type != 'jpg' && $file_type !='png' && $file_type != 'gif'){
     } else {
         $errors['img_name'] ='blank';
     }
+
+
+//エラーがなかった場合
+    if(empty($errors)) {
+//ファイルアップデートの処理
+        //1.フォルダの権限設定
+        //2.一意のファイル名生成
+        //3.アップロード
+
+        //一意のファイル名生成
+        //現在の日時を所得　年月日時分秒まで所得
+        $date_str = date('Ymdhis'); //YmdHisは所得フォーマット
+        $submit_file_name = $date_str . $file_name;
+
+        //画像アップロード
+        //move_uploaded_file(ファイル,アップロード先)
+        move_uploaded_file($_FILES['input_img_name']['tmp_name'],'../user_profile_img/' . $submit_file_name);
+
+        //$_SESSION
+        //セッションは各サーバの簡易的な保管庫
+        //連想配列方式で値を保持する
+        $_SESSION['49_LearnSNS']['name'] = $_POST['input_name'];
+        $_SESSION['49_LearnSNS']['email'] = $_POST['input_email'];
+        $_SESSION['49_LearnSNS']['password'] = $_POST['input_password'];
+        $_SESSION['49_LearnSNS']['img_name'] = $submit_file_name;
+
+
+        //check.phpへの遷移(移動)
+        //header('Location: 移動先');
+        header('Location: check.php');
+        exit();
+            }
 }
 
 
