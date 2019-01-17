@@ -1,9 +1,16 @@
 <?php
 session_start();
 
- echo '<pre>';
- var_dump($_SESSION);
- echo '</pre>';
+
+//セッションが空の場合,signup.phpに強制的に遷移
+if (!isset($_SESSION['49_LearnSNS'])){
+    //singup.phpへの遷移処理
+    header('Location: signup.php');
+    //exit()以降の処理はすべて行わない
+    exit();
+}
+
+
  $name = $_SESSION['49_LearnSNS']['name'];
  $email = $_SESSION['49_LearnSNS']['email'];
  $password = $_SESSION['49_LearnSNS']['password'];

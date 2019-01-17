@@ -4,6 +4,19 @@ session_start();
 //PHPファイルの先頭に書くこと
 
 
+// check.phから戻ってきた場合の処理
+if (isset($_GET['action']) && $_GET['action'] == 'rewrite'){
+// $_POSTに擬似的に値を代入する
+// バリデーションを働かせるため
+  $_POST['input_name'] = $_SESSION['49_LearnSNS']['name'];
+  $_POST['input_email'] = $_SESSION['49_LearnSNS']['email'];
+  $_POST['input_password'] = $_SESSION['49_LearnSNS']['password'];
+
+  // $errorsが空の場合、check.phpへ再遷移してしまう
+  $errors['rewrite'] = true;
+
+}
+
 #1.エラーだった場合に何のエラーかを保持する$errorsを定義
 #2.送信されたデータと空文字を比較
 #3.一致する場合は$errorsにnameをキーにblankという値を保持
@@ -44,14 +57,19 @@ if (!empty($_POST)){
 
 
 
-
-
     //$FILES[キー]['name']; ファイル名
     //$FILES[キー]['tmp_name']; ファイルデータそのもの
-    $file_name = $_FILES['input_img_name']['name'];
+    $file_name = '';
+    if(!isset($_GET['action'])){
+       $file_name = $FILES['input_img_name']['name'];
+    }
+    
+    
     if (!empty($file_name)) {
-
+        //ファイルの処理
         //拡張子チェックの流れ
+
+
         //1. 画像ファイルの拡張子を所得
         //2. 大文字は小文字に変換
         //3. jpg png gifと比較する
