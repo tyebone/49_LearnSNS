@@ -1,13 +1,18 @@
 <?php
 session_start();
+
+//49_LearnSNSのセッションが空の場合、signup.phpに
+
 //セッションを利用するための必須ルール
 //PHPファイルの先頭に書くこと
+$errors = [];
 
-
-// check.phから戻ってきた場合の処理
+// check.phpから戻ってきた場合の処理
 if (isset($_GET['action']) && $_GET['action'] == 'rewrite'){
 // $_POSTに擬似的に値を代入する
 // バリデーションを働かせるため
+
+
   $_POST['input_name'] = $_SESSION['49_LearnSNS']['name'];
   $_POST['input_email'] = $_SESSION['49_LearnSNS']['email'];
   $_POST['input_password'] = $_SESSION['49_LearnSNS']['password'];
@@ -17,15 +22,19 @@ if (isset($_GET['action']) && $_GET['action'] == 'rewrite'){
 
 }
 
+
 #1.エラーだった場合に何のエラーかを保持する$errorsを定義
 #2.送信されたデータと空文字を比較
 #3.一致する場合は$errorsにnameをキーにblankという値を保持
 #4.エラーがある場合エラーメッセージを表示
 
 #1. errorsの定義
-$errors = [];
-#POSTかどうか
 
+  $name = '';
+  $email = '';
+
+
+#POSTかどうか
     #2.空文字かどうか
 if (!empty($_POST)){
     //post$nameにinput
@@ -61,7 +70,7 @@ if (!empty($_POST)){
     //$FILES[キー]['tmp_name']; ファイルデータそのもの
     $file_name = '';
     if(!isset($_GET['action'])){
-       $file_name = $FILES['input_img_name']['name'];
+       $file_name = $_FILES['input_img_name']['name'];
     }
     
     
@@ -162,8 +171,11 @@ if($file_type != 'jpg' && $file_type !='png' && $file_type != 'gif'){
                         inputタグのname属性が$_POST
                     -->
 
-    <input type="text" name="input_name" class="form-control" id="name" placeholder="山田 太郎"value="">
+
+    <input type="text" name="input_name" class="form-control" id="name" placeholder="山田 太郎" value="<?php echo htmlspecialchars($name); ?>">
+
                         <!--
+                            valueの後のphpの前に空間を作らない
                             isset(連想配列[キー])連想配列のそのキーが設定されているかどうか
                         -->
 
@@ -176,7 +188,7 @@ if($file_type != 'jpg' && $file_type !='png' && $file_type != 'gif'){
 
     <div class="form-group">
         <label for="email">メールアドレス</label>
-    <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com" value="">
+    <input type="email" name="input_email" class="form-control" id="email" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($email); ?>">
 
 <?php if(isset($errors['email']) && $errors ['email'] =='blank'):?>
 
@@ -195,9 +207,14 @@ if($file_type != 'jpg' && $file_type !='png' && $file_type != 'gif'){
         <?php if (isset($errors['password']) && $errors['password'] == 'blank'):?>
             <p class="text-danger">パスワードを入力してください</p>
         <?php endif; ?>
-        <?php if (isset($errors['password']) && $errors['password'] == 'length'): ?>
+        <?php if (isset($errors['password']) && $errors['password'] == 'length'):?>
             <p class="text-danger">パスワードは4~16文字で入力して下さい</p>
-        <?php endif; ?>    
+<?php endif; ?>
+
+        <?php if(!empty($errors) && isset($errors['rewrite'])): ?>
+        <p class="text-danger">パスワードを再入力してください</p>
+    
+    <?php endif; ?>
         </div>
     <div class="form-group">
 
