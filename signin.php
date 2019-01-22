@@ -1,20 +1,23 @@
 <?php
 
 session_start();
-require('dbconnect.php');
+require('dbconnect.php'); //DBに接続する
 
-
+//errorがあった時にこの配列に指定の文字列を入れる（バリデーションを使うため）
+// 配列を初期化している
  $errors = [];
 
+// $_POSTの中身が空じゃなかったらif文を実行する
  if (!empty($_POST)){
     $email = $_POST['input_email'];
     $password = $_POST['input_password'];
     if ($email != '' && $password != ''){
         //正常系
         //両方入力
-        //データベースとの照合処理
+        //データベースとの照合処理（送る為の準備）
 
         $sql = 'SELECT * FROM `users` WHERE `email` = ?';
+
 //1.入力されたメールアドレスと一致する登録データを1件DBから所得
 
         $data = [$email];
@@ -38,7 +41,8 @@ require('dbconnect.php');
         //認証成功
 
         //3,セッションにIDを格納
-            $SESSION['49_LearnSNS']['id'] = $record['id'];
+            $_SESSION['49_LearnSNS']['id'] = $record['id'];
+            //TODO:$_SESSION
 
         //4,タイムライン画面に遷移
             header('Location: timeline.php');
