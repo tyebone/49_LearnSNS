@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+//一時的な保管庫
+
 require('dbconnect.php'); //DBに接続する
 
 //errorがあった時にこの配列に指定の文字列を入れる（バリデーションを使うため）
@@ -58,7 +60,7 @@ require('dbconnect.php'); //DBに接続する
 }
   ?>
 
-<?php include('layouts/header.php'); ?>
+<?php include('layouts/header.php');//includeはrequireと同じで指定場所に指定したものを送る ?>
 <body style="margin-top: 60px">
     <div class="container">
         <div class="row">
