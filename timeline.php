@@ -1,6 +1,31 @@
 <?php
+    session_start();
+    require('dbconnect.php');
 
+    $sql = 'SELECT * FROM `users` WHERE `id` = ?';
+    $data = [$_SESSION['49_LearnSNS']['id']];
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute($data);
+//アロー演算子->インスタンスのメンバメソッドを呼び出す
+
+
+    $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
+    echo '<pre>';
+    var_dump($signin_user);
+    echo '</pre>';
 ?>
+<!--
+    include(ファイル名);
+    指定されたファイルが指定された箇所に読み込まれる
+    webサービス内で共通するような場所は他のファイルで定義して様々なぺージから利用可能にするべき
+
+    includeとrequireの違い
+    プログラムに記述にミスがある場合
+    requireはエラーで サービスを停止させる
+    includeは警告 サービスは持続される
+
+    includeされたファイル内では呼び出し元の変数ができる(timeline.phpでincludeされているやつはnav.phpで利用できる)
+-->
 <?php include('layouts/header.php'); ?>
 <body style="margin-top: 60px; background: #E4E6EB;">
     <?php include('navbar.php'); ?>
