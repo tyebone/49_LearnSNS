@@ -2,6 +2,14 @@
     session_start();
     require('dbconnect.php');
 
+
+    //サインインをしていなければ
+    if (!isset($_SESSION['49_LearnSNS']['id'])) {
+    //signin.phpへ強制遷移
+        header('Location: signin.php');
+        exit();
+    }
+
     $sql = 'SELECT * FROM `users` WHERE `id` = ?';
     $data = [$_SESSION['49_LearnSNS']['id']];
     $stmt = $dbh->prepare($sql);
@@ -10,10 +18,12 @@
 
 
     $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
+
     echo '<pre>';
     var_dump($signin_user);
     echo '</pre>';
 ?>
+
 <!--
     include(ファイル名);
     指定されたファイルが指定された箇所に読み込まれる
@@ -26,6 +36,7 @@
 
     includeされたファイル内では呼び出し元の変数ができる(timeline.phpでincludeされているやつはnav.phpで利用できる)
 -->
+
 <?php include('layouts/header.php'); ?>
 <body style="margin-top: 60px; background: #E4E6EB;">
     <?php include('navbar.php'); ?>
