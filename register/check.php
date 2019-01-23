@@ -21,8 +21,9 @@ if (!isset($_SESSION['49_LearnSNS'])){
  $img_name = $_SESSION['49_LearnSNS']['img_name'];
  //セミコロン;
  //echo出力 $SESSIONスーパーグローバル変数 49_LearnSNS保管庫 nameキー
-
-
+echo "<pre>";
+var_dump($_SESSION);
+echo "</pre>";
  //post送信された時
  if (!empty($_POST)) {
 

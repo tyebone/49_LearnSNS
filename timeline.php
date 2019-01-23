@@ -2,18 +2,52 @@
     session_start();
     require('dbconnect.php');
 
+
+    //サインインをしていなければ
+    if (!isset($_SESSION['49_LearnSNS']['id'])) {
+    //signin.phpへ強制遷移
+        header('Location: signin.php');
+        exit();
+    }
+
+
     $sql = 'SELECT * FROM `users` WHERE `id` = ?';
     $data = [$_SESSION['49_LearnSNS']['id']];
     $stmt = $dbh->prepare($sql);
     $stmt->execute($data);
-//アロー演算子->インスタンスのメンバメソッドを呼び出す
+//アロー演算子->    
+//インスタンスのメンバメソッドを呼び出す
 
 
     $signin_user = $stmt->fetch(PDO::FETCH_ASSOC);
+
     echo '<pre>';
     var_dump($signin_user);
     echo '</pre>';
+
+
+    //エラー内容を入れておく配列定義
+    $errors = [];
+
+    //投稿ボタンが押されたら
+    //=POST送信だったら
+    if (!empty($_POST)){
+        //textareaの値を取り出し
+        //$_POSTのキーはtextareaタグのname属性を使う
+        $feed = $_POST['feed'];
+
+        //投稿が空かどうか
+        if($feed != ''){
+            //投稿処理
+        }else{
+
+            //エラー
+            //feedの内容が「空」というエラーを入れておく
+            $errors['feed'] = 'blank';
+        }
+    }
 ?>
+
 <!--
     include(ファイル名);
     指定されたファイルが指定された箇所に読み込まれる
@@ -26,6 +60,7 @@
 
     includeされたファイル内では呼び出し元の変数ができる(timeline.phpでincludeされているやつはnav.phpで利用できる)
 -->
+
 <?php include('layouts/header.php'); ?>
 <body style="margin-top: 60px; background: #E4E6EB;">
     <?php include('navbar.php'); ?>
@@ -39,12 +74,38 @@
             </div>
             <div class="col-xs-9">
                 <div class="feed_form thumbnail">
+
+
+
                     <form method="POST" action="">
+                <!-- actionが空の場合は自分自身にアクセス-->
+
                         <div class="form-group">
+
+
+
+                            <!--
+                                textareaは複数テキスト
+                                input type="text"は一行
+                            -->
                             <textarea name="feed" class="form-control" rows="3" placeholder="Happy Hacking!" style="font-size: 24px;"></textarea><br>
+
+                        <!--
+                        条件式
+                            １。feedにエラーありますか
+                            ２。そのエラー内容は「blank」ですか
+                        -->
+                            <?php if(isset($errors['feed']) && $errors['feed'] == 'blank'):?>
+                                <p class = "text-danger">投稿データを入力してください</p>
+                            <?php endif; ?>
+
+
                         </div>
                         <input type="submit" value="投稿する" class="btn btn-primary">
                     </form>
+
+
+
                 </div>
                 <div class="thumbnail">
                     <div class="row">
