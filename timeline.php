@@ -2,7 +2,6 @@
     session_start();
     require('dbconnect.php');
 
-
     //サインインをしていなければ
     if (!isset($_SESSION['49_LearnSNS']['id'])) {
     //signin.phpへ強制遷移
@@ -25,7 +24,8 @@
     var_dump($signin_user);
     echo '</pre>';
 
-
+//2019/01/24
+//________________________________________________________
     //エラー内容を入れておく配列定義
     $errors = [];
 
@@ -39,6 +39,19 @@
         //投稿が空かどうか
         if($feed != ''){
             //投稿処理
+            $sql = 'INSERT INTO `feeds` (`feed`,`user_id`,`created`)VALUES(?, ?, NOW())';
+            $data = [$feed ,$signin_user['id']];
+
+            //実行するSQLを準備
+            $stmt = $dbh->prepare($sql);
+
+            //SQL実行
+            $stmt->execute($data);
+
+            //投稿しっぱなしになるのを防ぐため
+            header('Location: timeline.php');
+            exit();
+            
         }else{
 
             //エラー
@@ -46,6 +59,7 @@
             $errors['feed'] = 'blank';
         }
     }
+    //_____________________________________________________________
 ?>
 
 <!--
