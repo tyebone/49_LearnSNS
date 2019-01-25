@@ -25,7 +25,7 @@
     echo '</pre>';
 
 //2019/01/24
-//________________________________________________________
+//_________________________________________________________________
     //エラー内容を入れておく配列定義
     $errors = [];
 
@@ -35,30 +35,68 @@
         //textareaの値を取り出し
         //$_POSTのキーはtextareaタグのname属性を使う
         $feed = $_POST['feed'];
+        //$feedは$_POST['feed'];で$_POSTの中の['feed']を取り出す
+
 
         //投稿が空かどうか
         if($feed != ''){
+
             //投稿処理
             $sql = 'INSERT INTO `feeds` (`feed`,`user_id`,`created`)VALUES(?, ?, NOW())';
+            //INSERT INTO `場所`(`箱1`,`箱2`,`箱3`)VALUESは値なので(値,値,NOW(は今の処理));
+
             $data = [$feed ,$signin_user['id']];
+            //$dataは$feedと$signin_user['id']があり、$feedは$_POST['feed']である
 
             //実行するSQLを準備
+            //$stmtで$dbhからprepare($sql)の$sqlである'INSERT INTO `feeds` (`feed`,`user_id`,`created`)VALUES(?, ?, NOW())'を取り出す。
             $stmt = $dbh->prepare($sql);
 
             //SQL実行
+            //アロー演算子
+            //$stmtの中の$dataをexecuteで実行することで$dataの$feedと$signin['id']を取り出す
             $stmt->execute($data);
 
-            //投稿しっぱなしになるのを防ぐため
-            header('Location: timeline.php');
-            exit();
-            
-        }else{
 
+            //投稿しっぱなしになるのを防ぐため
+            //headerで'Location: timeline.php'が遷移先
+            header('Location: timeline.php');
+
+            //プログラム終了を行う
+            exit();
+            }else{
             //エラー
             //feedの内容が「空」というエラーを入れておく
+
             $errors['feed'] = 'blank';
         }
     }
+    //2019/01/25--------------------------------------
+    $sql=
+       'SELECT `f`.*,`u`.`name`,`u`.`img_name`
+        FROM `feeds` AS `f`
+        LEFT JOIN `users` AS `u`
+        ON `f`.`user_id` = `u`.`id`
+        ORDER BY `f`.`created` DESC';
+    $stmt = $dbh->prepare($sql);
+    $stmt->execute();
+    //投稿情報を入れておく配列定義
+    $feeds = [];
+    while (true) {
+        //fetchは一行取得して次の行へ進む
+        //所得できた場合は連想配列
+        //所得できない場合はfalse
+        $record = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($record == false) {
+            break;
+        }
+        $feeds[] = $record;
+    }
+
+    echo '<pre>';
+    var_dump($feeds);
+    echo '</pre>';
+
     //_____________________________________________________________
 ?>
 
@@ -101,10 +139,10 @@
                             <!--
                                 textareaは複数テキスト
                                 input type="text"は一行
-                            -->
+                           __________________________________________________________________________________________ -->
                             <textarea name="feed" class="form-control" rows="3" placeholder="Happy Hacking!" style="font-size: 24px;"></textarea><br>
 
-                        <!--
+                        <!--__________________________________________________________________________________________
                         条件式
                             １。feedにエラーありますか
                             ２。そのエラー内容は「blank」ですか
