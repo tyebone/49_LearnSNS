@@ -25,7 +25,7 @@
     echo '</pre>';
 
 //2019/01/24
-//_________________________________________________________________
+//______________________________________________________
     //エラー内容を入れておく配列定義
     $errors = [];
 
@@ -72,7 +72,7 @@
         }
     }
     //2019/01/25--------------------------------------
-    $sql=
+    $sql =
        'SELECT `f`.*,`u`.`name`,`u`.`img_name`
         FROM `feeds` AS `f`
         LEFT JOIN `users` AS `u`
@@ -96,8 +96,8 @@
     echo '<pre>';
     var_dump($feeds);
     echo '</pre>';
-
-    //_____________________________________________________________
+//_____2019/01/24________________
+    //2019/01/25____________________
 ?>
 
 <!--
@@ -142,7 +142,7 @@
                            __________________________________________________________________________________________ -->
                             <textarea name="feed" class="form-control" rows="3" placeholder="Happy Hacking!" style="font-size: 24px;"></textarea><br>
 
-                        <!--__________________________________________________________________________________________
+                        <!--________________________________________
                         条件式
                             １。feedにエラーありますか
                             ２。そのエラー内容は「blank」ですか
@@ -155,23 +155,38 @@
                         </div>
                         <input type="submit" value="投稿する" class="btn btn-primary">
                     </form>
-
-
-
                 </div>
+                <!--_______________________2019/01/29_____
+                    foreach 配列の個数分繰り返し処理が行われる
+                    foreach(配列 as 取り出した変数)
+                    foreach(複数形 as 単数形)
+                -->
+
+                <?php foreach ($feeds as $feed): ?>
+                
+
                 <div class="thumbnail">
+
+
                     <div class="row">
                         <div class="col-xs-1">
-                            <img src="user_profile_img/misae.png" width="40px">
+                            <img src="user_profile_img/<?php echo $feed["img_name"]; ?>" width="40px">
                         </div>
                         <div class="col-xs-11">
-                            <a href="profile.php" style="color: #7f7f7f;">野原みさえ</a>
-                            2018-10-14
+                            <a href="profile.php" style="color: #7f7f7f;"><?php echo $feed["name"]; ?>
+                            </a>
+                            <?php echo $feed["created"]; ?>
                         </div>
                     </div>
                     <div class="row feed_content">
                         <div class="col-xs-12">
-                            <span style="font-size: 24px;">LearnSNSの開発頑張ろう！</span>
+
+
+                            <span style="font-size: 24px;">
+                                <?php echo $feed['feed'];?>
+                            </span>
+                            <!--_______2019/01/29__________-->
+
                         </div>
                     </div>
                     <div class="row feed_sub">
@@ -187,6 +202,10 @@
                         <?php include('comment_view.php'); ?>
                     </div>
                 </div>
+                <!--___________2019/01/29______________-->
+                <?php endforeach; ?>
+                <!--___________2019/01/29______________-->
+
                 <div aria-label="Page navigation">
                     <ul class="pager">
                         <li class="previous disabled"><a><span aria-hidden="true">&larr;</span> Newer</a></li>
