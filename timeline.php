@@ -78,8 +78,13 @@
         LEFT JOIN `users` AS `u`
         ON `f`.`user_id` = `u`.`id`
         ORDER BY `f`.`created` DESC';
+        //LEFT JOINできないとやばい
+        //`f`はfeeds  `u`はusers
+        //テーブル結合ユーザー情報とコメントが別にあるのでテーブル結合にて結合させる。
+
     $stmt = $dbh->prepare($sql);
     $stmt->execute();
+
     //投稿情報を入れておく配列定義
     $feeds = [];
     while (true) {
@@ -156,12 +161,13 @@
                         <input type="submit" value="投稿する" class="btn btn-primary">
                     </form>
                 </div>
+
+
                 <!--_______________________2019/01/29_____
                     foreach 配列の個数分繰り返し処理が行われる
                     foreach(配列 as 取り出した変数)
                     foreach(複数形 as 単数形)
                 -->
-
                 <?php foreach ($feeds as $feed): ?>
                 
 
@@ -196,8 +202,10 @@
                             <span class="like-count">10</span>
                             <a href="#collapseComment" data-toggle="collapse" aria-expanded="false"><span>コメントする</span></a>
                             <span class="comment-count">コメント数：5</span>
+                                <?php if ($feed['user_id'] == $signin_user['id']): ?>
                             <a href="edit.php" class="btn btn-success btn-xs">編集</a>
-                            <a onclick="return confirm('ほんとに消すの？');" href="#" class="btn btn-danger btn-xs">削除</a>
+                            <a onclick="return confirm('ほんとに消すの？');" href="delete.php?feed_id=<?php echo $feed['id']; ?>" class="btn btn-danger btn-xs">削除</a>
+                                <?php endif;?>
                         </div>
                         <?php include('comment_view.php'); ?>
                     </div>
