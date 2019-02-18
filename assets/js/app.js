@@ -52,4 +52,8 @@ $(function(){
 		})
 
 	})
+	
+	$(document).on('click','.js-unlike',function(){
+		console.log('取り消すが押された')
+	})
 })
