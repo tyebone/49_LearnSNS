@@ -106,6 +106,17 @@
         //三項演算子
         //条件 ? 真の時の値 : 偽の時の値
         $record['is_liked'] = $is_liked ? true : false;
+        // 投稿に対して何件いいねされているか
+        // COUNT(カラム)件数を所得
+        //*は何かしら値があれば、の意味
+        $like_sql = 'SELECT COUNT(*) AS `like_cnt`
+                     FROM `likes`
+                     WHERE `feed_id` = ?';
+        $like_data = [$record['id']];
+        $like_stmt = $dbh->prepare($like_sql);
+        $like_stmt->execute($like_data);
+        $like = $like_stmt->fetch(PDO::FETCH_ASSOC);
+        $record['like_cnt'] = $like['like_cnt'];
 
         $feeds[] = $record;
     }
@@ -217,13 +228,14 @@
                             <span hidden class="feed-id"><?php echo $feed['id']; ?></span>
                         <?php if ($feed['is_liked']):?>
                             <button class="btn btn-default js-unlike"><span>いいねを取り消す</span></button>
-                        <?php else: ?>    
+                        <?php else: ?>
                             <button class="btn btn-default js-like"><span>いいね！</span></button>
                         <?php endif; ?>
                             いいね数：
-                            <span class="like-count">10</span>
-                            <a href="#collapseComment" data-toggle="collapse" aria-expanded="false"><span>コメントする</span></a>
-                            <span class="comment-count">コメント数：5</span>
+                            <span class="like-count">
+                                <?php echo $feed['like_cnt']; ?></span>
+                            <a href="#collapseComment" data-toggle="collapse" aria-expanded="false"><span>コメントする</span>
+                            <span class="comment-count">コメント数：5</span></a>
                                 <?php if ($feed['user_id'] == $signin_user['id']): ?>
                             <a href="edit.php?feed_id=<?php echo $feed['id']; ?>" class="btn btn-success btn-xs">編集</a>
                             <a onclick="return confirm('ほんとに消すの？');" href="delete.php?feed_id=<?php echo $feed['id']; ?>" class="btn btn-danger btn-xs">削除</a>
