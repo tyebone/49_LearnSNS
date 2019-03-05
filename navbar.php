@@ -10,10 +10,22 @@
                 <a class="navbar-brand" href="index.php">Learn SNS</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-collapse1">
+
+
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="timeline.php">タイムライン</a></li>
-                    <li><a href="users.php">ユーザー一覧</a></li>
+                    <?php if(strpos($_SERVER['REQUEST_URI'],'timeline.php')!== false): ?>
+
+                        <li class="active"><a href="timeline.php">タイムライン</a></li>
+                        <li><a href="users.php">ユーザー一覧</a></li>
+                        
+                    <?php else: ?>
+
+                        <li class="active"><a href="timeline.php">タイムライン</a></li>
+                        <li><a href="users.php">ユーザー一覧</a></li>
+                    <?php endif; ?>
                 </ul>
+
+
                 <form method="GET" action="timeline.php" class="navbar-form navbar-left" role="search">
                     <div class="form-group">
                         <input type="text" name="search_word" class="form-control" placeholder="投稿を検索" value="">
